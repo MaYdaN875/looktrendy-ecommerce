@@ -1,78 +1,80 @@
-# React + TypeScript + Vite
+# Look Trendy Gaby
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Prototipo visual en React + TypeScript + Vite. Las páginas reproducen los HTML
+de Stitch conservados en `desing/`, con sus imágenes, textos, precios y estados
+de ejemplo. No procesa compras ni pagos.
 
-Currently, two official plugins are available:
+## Desarrollo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `npm install`
+- `npm run dev`
+- `npm run build`: TypeScript y compilación de producción.
+- `npm run lint`: revisión de ESLint.
 
-## React Compiler
+## Estructura
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```text
+src/
+  components/              # Header y footer compartidos
+  lib/                     # Utilidades generales
+  router/
+    app.router.tsx         # Configuración createBrowserRouter
+  shop/
+    layouts/
+      StoreLayout.tsx      # Outlet y desplazamiento al navegar
+    pages/
+      home/
+      catalog/
+      product/
+      cart/
+      checkout/
+      not-found/
+  LooktrendyApp.tsx        # RouterProvider
+  main.tsx
+  index.css
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Cada carpeta de página contiene su componente Page, su composición View y
+una carpeta components con las secciones visuales. Inicio y checkout incluyen
+las versiones móviles de Stitch, visibles por debajo de 768 px.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Se conservó la configuración de rutas del usuario, actualizando solo los imports.
+El layout deja que cada vista componga el encabezado y pie correspondientes
+porque Stitch usa variantes diferentes en producto y móvil.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Rutas
 
-```
+| URL | Pantalla |
+| --- | --- |
+| `/` | Inicio |
+| `/catalogo` | Catálogo completo de muestra |
+| `/producto/:slug` | Ficha visual de Cardigan Floral Pop |
+| `/carrito` | Carrito con artículos y resumen de ejemplo |
+| `/checkout` | Checkout visual |
+| Cualquier otra | Página no encontrada |
+
+Ejemplo: `/producto/cardigan-floral-pop`.
+Los enlaces principales permiten recorrer el prototipo. Los filtros, contadores,
+cupones, cantidades, membresías y botones de pago no tienen lógica comercial.
+Los campos nativos se pueden editar, pero no se envía ni persiste información.
+Los parámetros de colección en los enlaces aún no filtran productos.
+
+## Estilos y recursos
+
+Tailwind CSS 3 se compila localmente con PostCSS; la configuración recoge los
+tokens del diseño original. No se ejecuta el CDN JavaScript de Tailwind.
+Imágenes, Plus Jakarta Sans y Material Symbols conservan sus fuentes externas
+y requieren conexión. Algunos recursos del export original pueden no estar disponibles.
+
+`scripts/import-stitch.py` fue usado para convertir los HTML locales a JSX editable,
+excluyendo scripts y manejadores de eventos originales. No forma parte del build.
+No volver a ejecutarlo sin intención de sobrescribir los componentes visuales.
+
+## Pendiente
+
+Conectar los componentes a datos reales, definir variantes e inventario,
+implementar el carrito y seleccionar la integración de pagos.
+Los precios, promociones y promesas operativas del diseño son únicamente muestras.
+
+Para desplegar, configurar el hosting con fallback a `index.html` para las rutas
+de React Router. No se ha publicado la aplicación.
